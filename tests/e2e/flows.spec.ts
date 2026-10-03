@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { freshDemo, loginAs, noErrors } from './helpers';
 
 test.beforeEach(async ({ page }) => { await freshDemo(page); });

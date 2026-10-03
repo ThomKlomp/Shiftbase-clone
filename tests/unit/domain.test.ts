@@ -213,3 +213,16 @@ describe('timesheet', () => {
     await expect(api.clockOut(EMP)).rejects.toThrow();
   });
 });
+
+describe('daylight saving (Europe/Amsterdam: 25 Oct 2026 clocks back, 29 Mar 2026 forward)', () => {
+  it('adding days across the change never skips or repeats a date', () => {
+    expect(addDays('2026-10-24', 1)).toBe('2026-10-25');
+    expect(addDays('2026-10-25', 1)).toBe('2026-10-26');
+    expect(addDays('2026-03-28', 2)).toBe('2026-03-30');
+    const week = Array.from({ length: 7 }, (_, i) => addDays('2026-10-19', i));
+    expect(new Set(week).size).toBe(7);
+  });
+  it('a night shift is 8 hours on the wall clock, whatever the date', () => {
+    expect(durationMin('22:00', '06:00')).toBe(480);
+  });
+});

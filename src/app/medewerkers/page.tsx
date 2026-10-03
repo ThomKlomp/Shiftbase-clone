@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { UserPlus } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { useSession } from '@/lib/session';
-import { hasPerm } from '@/lib/domain';
+import { hasPerm, hasPermAnywhere } from '@/lib/domain';
 import * as api from '@/lib/api';
 import { Avatar, Banner, Button, Dialog, Empty, Field, Input, PageHeader, Select, useAction } from '@/components/ui';
 
@@ -16,6 +16,7 @@ export default function Employees() {
   const [q, setQ] = useState('');
   const [showInactive, setShowInactive] = useState(false);
   if (!me) return null;
+  if (!hasPermAnywhere(state, me.id, 'employees.manage')) return <Banner kind="danger">Je hebt geen rechten om medewerkers te beheren.</Banner>;
   const managed = state.employees.filter((e) => e.teamIds.some((t) => hasPerm(state, me.id, state.teams.find((x) => x.id === t)!.departmentId, 'employees.manage')));
   const rows = managed.filter((e) => (showInactive || e.active) && `${e.firstName} ${e.lastName} ${e.email}`.toLowerCase().includes(q.toLowerCase()));
   return (
@@ -26,7 +27,7 @@ export default function Employees() {
         <label className="flex items-center gap-2"><input type="checkbox" checked={showInactive} onChange={(e) => setShowInactive(e.target.checked)} />Toon inactieve</label>
       </div>
       {rows.length === 0 ? <Empty title={q ? 'Niemand gevonden' : 'Nog geen medewerkers'} /> : (
-        <div className="overflow-x-auto rounded-lg border border-border"><table className="w-full text-left"><caption className="sr-only">Medewerkers</caption>
+        <div className="relative overflow-x-auto rounded-lg border border-border"><table className="w-full text-left"><caption className="sr-only">Medewerkers</caption>
           <thead className="bg-surface"><tr><th scope="col" className="p-2">Naam</th><th scope="col" className="p-2">Team</th><th scope="col" className="p-2">Rol</th><th scope="col" className="p-2">Uren/week</th><th scope="col" className="p-2"><span className="sr-only">Acties</span></th></tr></thead>
           <tbody>{rows.map((e) => (
             <tr key={e.id} className="border-t border-border">

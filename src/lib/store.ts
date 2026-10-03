@@ -16,21 +16,45 @@ function load(): State {
       if (raw) return (state = JSON.parse(raw) as State);
     } catch { /* storage blocked: fall through to seed */ }
   }
-  return (state = makeSeed());
+  state = makeSeed();
+  persist(state);
+  return state;
+}
+
+function persist(s: State) {
+  try { window.localStorage.setItem(KEY, JSON.stringify(s)); } catch { /* storage blocked: stays in memory */ }
+}
+
+/** Another tab may have written since we last looked: take its version before changing anything. */
+function syncFromStorage() {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    if (raw) state = JSON.parse(raw) as State;
+  } catch { /* keep memory copy */ }
+}
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key !== KEY) return;
+    syncFromStorage();
+    listeners.forEach((l) => l());
+  });
 }
 
 export const getState = (): State => load();
 
 export function setState(next: State) {
   state = next;
-  try { window.localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* ignore */ }
+  persist(next);
   listeners.forEach((l) => l());
 }
 export function resetState(next: State = makeSeed()) { setState(next); }
 
 /** Mutate a deep copy, then publish. All data-layer writes go through here. */
 export function update<T>(fn: (draft: State) => T): T {
-  const draft = structuredClone(load());
+  load();
+  syncFromStorage();
+  const draft = structuredClone(state as State);
   const result = fn(draft);
   setState(draft);
   return result;

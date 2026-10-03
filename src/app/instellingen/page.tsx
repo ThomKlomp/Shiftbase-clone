@@ -5,6 +5,7 @@ import { useStore } from '@/lib/store';
 import { useSession } from '@/lib/session';
 import * as api from '@/lib/api';
 import type { ShiftType } from '@/lib/types';
+import { hasPermAnywhere } from '@/lib/domain';
 import { Banner, Button, Check_, Dialog, Field, Input, PageHeader, Select, useAction, useTry } from '@/components/ui';
 import { shiftColour } from '@/components/schedule/ShiftCard';
 
@@ -14,8 +15,10 @@ const PERM_LABEL: Record<string, string> = { 'schedule.edit': 'Rooster bewerken'
 
 export default function Settings() {
   const { me } = useSession();
+  const state = useStore();
   const [tab, setTab] = useState<Tab>('structuur');
   if (!me) return null;
+  if (!hasPermAnywhere(state, me.id, 'settings.manage')) return <Banner kind="danger">Je hebt geen rechten om de instellingen te beheren.</Banner>;
   return (
     <div className="max-w-4xl">
       <PageHeader title="Instellingen" />
@@ -119,7 +122,7 @@ function Permissions() {
   const state = useStore();
   const perms = Object.keys(PERM_LABEL);
   return (
-    <div className="overflow-x-auto"><table className="w-full text-left"><caption className="mb-2 text-left text-text-muted">Rechten per rol. Een medewerker kan per afdeling een andere rol hebben.</caption>
+    <div className="relative overflow-x-auto"><table className="w-full text-left"><caption className="mb-2 text-left text-text-muted">Rechten per rol. Een medewerker kan per afdeling een andere rol hebben.</caption>
       <thead className="bg-surface"><tr><th scope="col" className="p-2">Recht</th>{state.groups.map((g) => <th scope="col" key={g.id} className="p-2">{g.name}</th>)}</tr></thead>
       <tbody>{perms.map((p) => <tr key={p} className="border-t border-border"><th scope="row" className="p-2 font-normal">{PERM_LABEL[p]}</th>{state.groups.map((g) => <td key={g.id} className="p-2">{g.permissions.includes(p as never) ? <span aria-label="Ja">✓</span> : <span aria-label="Nee" className="text-text-muted">–</span>}</td>)}</tr>)}</tbody></table></div>
   );

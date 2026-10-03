@@ -6,7 +6,7 @@ import { useSession } from '@/lib/session';
 import { coverage, hasPerm } from '@/lib/domain';
 import { fmtLong, todayStr } from '@/lib/dates';
 import * as api from '@/lib/api';
-import { Button, Empty, Field, Input, PageHeader, Select, useAction } from '@/components/ui';
+import { Banner, Button, Empty, Field, Input, PageHeader, Select, useAction } from '@/components/ui';
 
 export default function Required() {
   const state = useStore();
@@ -20,6 +20,7 @@ export default function Required() {
   const [mode, setMode] = useState<'min' | 'max' | 'exact'>('min');
   const [count, setCount] = useState(2);
   if (!me) return null;
+  if (depts.length === 0) return <Banner kind="danger">Je hebt geen rechten om de bezetting in te stellen.</Banner>;
   const teams = state.teams.filter((t) => depts.some((d) => d.id === t.departmentId));
   const tid = teamId || teams[0]?.id || '';
   const team = state.teams.find((t) => t.id === tid);
@@ -37,12 +38,12 @@ export default function Required() {
         <div className="flex items-end"><Button variant="primary" type="submit">Toevoegen</Button></div>
       </form>
       {rows.length === 0 ? <Empty title="Nog geen bezetting ingesteld" /> : (
-        <table className="w-full text-left"><caption className="sr-only">Ingestelde bezetting</caption>
+        <div className="relative overflow-x-auto"><table className="w-full min-w-[560px] text-left"><caption className="sr-only">Ingestelde bezetting</caption>
           <thead><tr className="border-b border-border"><th scope="col" className="p-2">Datum</th><th scope="col" className="p-2">Team</th><th scope="col" className="p-2">Tijd</th><th scope="col" className="p-2">Nodig</th><th scope="col" className="p-2">Ingepland</th><th scope="col" className="p-2"><span className="sr-only">Acties</span></th></tr></thead>
           <tbody>{rows.map((r) => { const c = coverage(state, r.departmentId, r.teamId, r.date); return (
             <tr key={r.id} className="border-b border-border"><td className="p-2">{fmtLong(r.date)}</td><td className="p-2">{state.teams.find((t) => t.id === r.teamId)?.name}</td><td className="p-2">{r.start}–{r.end}</td>
               <td className="p-2">{{ min: 'min.', max: 'max.', exact: '' }[r.mode]} {r.count}</td><td className="p-2">{c.scheduled}{c.state === 'under' && <span className="ml-2 text-warning">tekort</span>}</td>
-              <td className="p-2"><Button size="sm" variant="ghost" aria-label="Verwijderen" onClick={() => run(() => api.deleteRequiredShift(me.id, r.id))}><Trash2 size={14} aria-hidden /></Button></td></tr>); })}</tbody></table>
+              <td className="p-2"><Button size="sm" variant="ghost" aria-label="Verwijderen" onClick={() => run(() => api.deleteRequiredShift(me.id, r.id))}><Trash2 size={14} aria-hidden /></Button></td></tr>); })}</tbody></table></div>
       )}
     </div>
   );
