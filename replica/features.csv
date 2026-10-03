@@ -1,0 +1,22 @@
+feature,area,priority,original,clone,notes
+Sign up and log in,onboarding,must,yes,no,draft
+Create departments and teams,structure,must,yes,no,[search] departments split into teams
+Define shift types per department,structure,must,yes,no,[search]
+Create edit and delete shifts on a week grid,schedule,must,yes,no,draft
+Assign shift to employee,schedule,must,yes,no,draft
+Publish schedule and notify staff,schedule,must,yes,no,draft
+Open shifts that staff can claim,schedule,should,yes,no,[search]
+Conflict warnings (overlap or unavailable or on leave),schedule,should,yes,no,guess
+Employees specify availability,availability,must,yes,no,[search]
+Planner sees availability while scheduling,availability,must,yes,no,[search]
+Employee requests leave,leave,must,yes,no,[search]
+Manager approves edits or rejects leave,leave,must,yes,no,[search]
+Leave types (holiday sickness special),leave,should,yes,no,[search]
+Leave balance tracking,leave,should,yes,no,guess
+Employee views own schedule on mobile,employee app,must,yes,no,[search]
+Shift swap between employees,employee app,should,yes,no,[search]
+Push and email notifications,notifications,should,yes,no,guess
+Employee management and invites,people,must,yes,no,guess
+Clock in and out and timesheets,time clock,could,yes,no,out of current slice; verify
+Public API with API keys,integrations,could,yes,no,[search] verify scope
+Integration marketplace (payroll POS HR),integrations,could,yes,skip,partner network cannot be rebuilt
