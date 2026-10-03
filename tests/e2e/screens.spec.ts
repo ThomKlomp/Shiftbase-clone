@@ -30,6 +30,6 @@ test('landing screenshot', async ({ page }) => {
   await page.getByRole('button', { name: 'Alles kiezen' }).click();
   await page.getByRole('button', { name: 'Publiceren', exact: true }).click();
   await page.getByRole('button', { name: 'Klaar' }).click();
-  await page.waitForTimeout(300);
+  await page.getByRole('region', { name: 'Meldingen' }).getByRole('status').waitFor({ state: 'detached', timeout: 8000 });
   await page.screenshot({ path: 'public/screens/rooster.png' });
 });
