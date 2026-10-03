@@ -1,0 +1,15 @@
+@import './tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { font-family: var(--font-sans); color: var(--color-text); background: var(--color-bg); }
+  body { @apply bg-bg text-text text-sm; }
+  :focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+  dialog::backdrop { background: rgba(16, 24, 40, 0.45); }
+  dialog { @apply bg-bg text-text p-0 border border-border shadow-pop; }
+}
+@layer components {
+  .skeleton { @apply bg-surface-sunken rounded-md animate-pulse; }
+}
