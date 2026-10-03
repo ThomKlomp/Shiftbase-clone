@@ -1,22 +1,45 @@
 feature,area,priority,original,clone,notes
-Sign up and log in,onboarding,must,yes,no,draft
-Create departments and teams,structure,must,yes,no,[search] departments split into teams
-Define shift types per department,structure,must,yes,no,[search]
-Create edit and delete shifts on a week grid,schedule,must,yes,no,draft
-Assign shift to employee,schedule,must,yes,no,draft
-Publish schedule and notify staff,schedule,must,yes,no,draft
-Open shifts that staff can claim,schedule,should,yes,no,[search]
-Conflict warnings (overlap or unavailable or on leave),schedule,should,yes,no,guess
-Employees specify availability,availability,must,yes,no,[search]
-Planner sees availability while scheduling,availability,must,yes,no,[search]
-Employee requests leave,leave,must,yes,no,[search]
-Manager approves edits or rejects leave,leave,must,yes,no,[search]
-Leave types (holiday sickness special),leave,should,yes,no,[search]
-Leave balance tracking,leave,should,yes,no,guess
-Employee views own schedule on mobile,employee app,must,yes,no,[search]
-Shift swap between employees,employee app,should,yes,no,[search]
-Push and email notifications,notifications,should,yes,no,guess
-Employee management and invites,people,must,yes,no,guess
-Clock in and out and timesheets,time clock,could,yes,no,out of current slice; verify
-Public API with API keys,integrations,could,yes,no,[search] verify scope
+Sign up and log in,onboarding,must,yes,no,S01
+Multi-factor authentication,onboarding,could,yes,no,help: securing account with MFA
+Locations / departments / teams hierarchy,structure,must,yes,no,teams type default/flexpool/hidden
+Department variations (own rules per department),structure,should,yes,no,shift/permission/availability/publish rules per dept
+Permission groups (admin manager planner employee) per department,permissions,must,yes,no,custom groups too
+Shift types (name colour times breaks short name),schedule,must,yes,no,edits to times not retroactive
+Day / week / month schedule grid by team,schedule,must,yes,no,S03
+Create edit delete shifts (button / + / drag),schedule,must,yes,no,S04
+Recurring shifts (only this / all future),schedule,must,yes,no,
+Move and copy shifts; copy schedule,schedule,must,yes,no,
+Loan employee to another team,schedule,could,yes,no,change team on shift
+Publish schedule per day with rolling auto-publish,schedule,must,yes,no,365/N/0 setting
+Notify employees on shift change,notifications,must,yes,no,email+push
+Open shifts with invite / request / assign,schedule,must,yes,no,statuses: invited requested declined assigned; approval optional
+Required shifts (staffing targets and coverage bar),schedule,should,yes,no,min/max/exact
+Shift exchange requests with manager approval,employee app,should,yes,no,first colleague wins
+Employee specifies availability (all day / from / unavailable),availability,must,yes,no,no approval
+Planner sees availability (green/grey) in schedule,availability,must,yes,no,
+Availability rules (deadline reminder min days),availability,could,yes,no,premium plan
+Absence request and approve/decline,absence,must,yes,no,checks restrictions balance overlap
+Absence types,absence,must,yes,no,
+Time off balances (hours or days) with accrual,absence,should,yes,no,
+Balance expiry and corrections,absence,could,yes,no,
+Absence calendar,absence,should,yes,no,
+Employee management invite deactivate import,people,must,yes,no,
+Contracts and surcharges / rate cards,people,could,yes,no,payroll-ish; defer
+Skills on shifts,schedule,could,yes,no,
+Bulk actions on employees,people,could,yes,no,
+Employee dashboard,employee app,should,yes,no,
+Mobile: my schedule team view open shifts,employee app,must,yes,no,responsive web first
+Mobile: availability and absence,employee app,must,yes,no,
+Push and email notification settings,notifications,should,yes,no,
+Timesheet add and approve hours,time clock,should,yes,no,pending/approved/declined
+Clock in and out (app punch clock),time clock,could,yes,no,
+Kiosk mode,time clock,could,yes,no,
+Budget and forecast,performance,could,yes,no,
+Reports,reports,could,yes,no,
+Compliance check (working hours law),schedule,could,yes,no,country rule packs; generic rules only
+Print / send schedule / calendar sync,schedule,should,yes,no,
+News and company files,people,could,yes,no,
+Public API with API keys,integrations,could,yes,no,verify scope
 Integration marketplace (payroll POS HR),integrations,could,yes,skip,partner network cannot be rebuilt
+HR Pro (contracts e-signing onboarding),hr,could,yes,skip,add-on; out of scope for now
+Weather forecast and sentiment analyzer,performance,could,yes,skip,licensed/third-party data
