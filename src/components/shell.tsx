@@ -30,7 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const state = useStore();
   const path = usePathname();
   const router = useRouter();
-  const onLogin = path === '/login';
+  const onLogin = path === '/login' || path === '/';
 
   useEffect(() => { if (ready && !me && !onLogin) router.replace('/login'); }, [ready, me, onLogin, router]);
 

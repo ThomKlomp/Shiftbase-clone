@@ -1,0 +1,17 @@
+{
+  "avoid": ["Shiftbase", "Shift base", "Differentlab", "Different Lab"],
+  "_note": "Draft for a future app-store release. There is no native app yet (the product is a web app / PWA), so nothing here is submitted. Re-lint before submitting.",
+  "app_store": {
+    "name": "Beurtwerk: Rooster voor teams",
+    "subtitle": "Diensten, verlof en ruilen",
+    "promotional_text": "Plan op je telefoon, zie wie wat wijzigde en vind vergeten uitklokken in één blik.",
+    "description": "Beurtwerk is het rooster van je team, ook vanaf je telefoon.\n\nPlanners maken en publiceren diensten per dag. Medewerkers geven hun beschikbaarheid door, vragen verlof aan, nemen open diensten en ruilen met collega's. De planner keurt goed.\n\nWat het anders doet:\n- Logboek: zie wie een dienst heeft gewijzigd of verwijderd\n- Waarschuwing bij overlap, verlof of onbeschikbaarheid, zonder je te blokkeren\n- Plannen en bewerken op je telefoon, met dagweergave\n- Vergeten uit te klokken? Beurtwerk markeert het en je herstelt het met één tik\n- Nette afdruk van het weekrooster\n\nOok handig:\n- Open diensten met uitnodigen en aanvragen\n- Verlofsaldo in uren met correcties\n- Ruilverzoeken met goedkeuring\n- Tijdregistratie met in- en uitklokken\n\nGratis voor kleine teams. Betaald per actieve medewerker, opzeggen met één klik.",
+    "keywords": "personeelsplanning,beschikbaarheid,urenregistratie,werkrooster,ploegendienst,planner,uren,team",
+    "whats_new": "Eerste versie."
+  },
+  "google_play": {
+    "title": "Beurtwerk: Rooster voor teams",
+    "short_description": "Plan diensten, regel verlof en ruilen. Zie wie wat wijzigde.",
+    "full_description": "Beurtwerk is het rooster van je team, ook vanaf je telefoon.\n\nPlanners maken en publiceren diensten per dag. Medewerkers geven hun beschikbaarheid door, vragen verlof aan, nemen open diensten en ruilen met collega's. De planner keurt goed.\n\nWat het anders doet:\n- Logboek: zie wie een dienst heeft gewijzigd of verwijderd\n- Waarschuwing bij overlap, verlof of onbeschikbaarheid, zonder je te blokkeren\n- Plannen en bewerken op je telefoon, met dagweergave\n- Vergeten uit te klokken? Beurtwerk markeert het en je herstelt het met één tik\n\nGratis voor kleine teams. Betaald per actieve medewerker, opzeggen met één klik."
+  }
+}

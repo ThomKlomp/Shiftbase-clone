@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useStore, resetState } from '@/lib/store';
 import { useSession } from '@/lib/session';
+import { hasPermAnywhere } from '@/lib/domain';
 import { BRAND } from '@/lib/brand';
 import { Avatar, Button, Banner } from '@/components/ui';
 
@@ -19,7 +20,7 @@ export default function Login() {
           const group = state.groups.find((g) => g.id === Object.values(e.groupByDept)[0])?.name;
           return (
             <li key={e.id}>
-              <button onClick={() => { signIn(e.id); router.replace('/'); }}
+              <button onClick={() => { signIn(e.id); router.replace(hasPermAnywhere(state, e.id, 'schedule.edit') ? '/rooster' : '/mijn-rooster'); }}
                 className="flex min-h-[48px] w-full items-center gap-3 rounded-md border border-border bg-surface px-3 text-left hover:bg-surface-sunken">
                 <Avatar name={`${e.firstName} ${e.lastName}`} />
                 <span className="flex-1"><span className="block font-medium">{e.firstName} {e.lastName}</span><span className="text-xs text-text-muted">{group}</span></span>

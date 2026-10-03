@@ -19,3 +19,17 @@ for (const [id, who, path] of SCREENS) {
     });
   }
 }
+
+// The product screenshot used on the landing page: a published week, own demo data.
+test('landing screenshot', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await freshDemo(page);
+  await loginAs(page, 'Bram');
+  await page.getByRole('button', { name: 'Acties' }).click();
+  await page.getByRole('menuitem', { name: /Publiceren/ }).click();
+  await page.getByRole('button', { name: 'Alles kiezen' }).click();
+  await page.getByRole('button', { name: 'Publiceren', exact: true }).click();
+  await page.getByRole('button', { name: 'Klaar' }).click();
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: 'public/screens/rooster.png' });
+});

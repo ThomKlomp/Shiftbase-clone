@@ -3,7 +3,7 @@ import { expect, test } from './fixtures';
 import { freshDemo, loginAs } from './helpers';
 
 const PAGES: [string, string][] = [
-  ['Bram', '/rooster'], ['Bram', '/open-diensten'], ['Bram', '/ruilen'], ['Anna', '/medewerkers'], ['Chantal', '/beschikbaarheid'],
+  ['Bram', '/rooster'], ['Bram', '/logboek'], ['Anonymous', '/'], ['Bram', '/open-diensten'], ['Bram', '/ruilen'], ['Anna', '/medewerkers'], ['Chantal', '/beschikbaarheid'],
   ['Bram', '/verlof'], ['Bram', '/vereiste-diensten'], ['Bram', '/tijdregistratie'], ['Anna', '/instellingen'], ['Chantal', '/meldingen'],
   ['Chantal', '/mijn-rooster'], ['Chantal', '/meer'],
 ];
@@ -12,7 +12,7 @@ for (const [who, path] of PAGES) {
     test(`axe: ${path} as ${who} (${label})`, async ({ page }) => {
       await page.setViewportSize({ width: w, height: h });
       await freshDemo(page);
-      await loginAs(page, who);
+      if (who !== 'Anonymous') await loginAs(page, who);
       await page.goto(path);
       await page.waitForLoadState('networkidle');
       const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
