@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, type ReactNode } from 'react';
 import { Bell, CalendarDays, CalendarOff, Clock, Home, LogOut, Repeat, Settings, Users, Hand, Target, CalendarClock, ScrollText } from 'lucide-react';
 import { useSession } from '@/lib/session';
+import { BRAND } from '@/lib/brand';
 import { useStore } from '@/lib/store';
 import { hasPermAnywhere } from '@/lib/domain';
 import type { Perm } from '@/lib/types';
@@ -56,12 +57,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen md:grid print:block md:grid-cols-[var(--layout-sidebar)_1fr]">
       <a href="#inhoud" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-bg focus:px-3 focus:py-2">Naar inhoud</a>
       <aside className="hidden print:hidden border-r border-border bg-surface md:flex md:flex-col">
-        <div className="flex h-[var(--layout-header)] items-center px-4 text-lg font-bold">Rooster</div>
+        <div className="flex h-[var(--layout-header)] items-center px-4 text-lg font-bold">{BRAND.name}</div>
         <nav aria-label="Hoofdmenu" className="flex flex-1 flex-col gap-1 px-2">{items.map((n) => link(n))}</nav>
       </aside>
       <div className="flex min-w-0 flex-col pb-16 md:pb-0">
         <header className="flex print:hidden h-[var(--layout-header)] items-center justify-between gap-2 border-b border-border px-4">
-          <span className="font-bold md:hidden">Rooster</span>
+          <span className="font-bold md:hidden">{BRAND.name}</span>
           <span className="hidden text-text-muted md:inline">{state.orgName}</span>
           <div className="flex items-center gap-2">
             <Link href="/meldingen" aria-label={unread ? `Meldingen, ${unread} ongelezen` : 'Meldingen'} className="relative rounded-md p-2 hover:bg-surface-sunken">

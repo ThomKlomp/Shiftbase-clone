@@ -6,8 +6,8 @@
   --color-border-input: #808895;
   --color-text: #14171c;
   --color-text-muted: #58616e;
-  --color-accent: #2f5bea;
-  --color-accent-soft: #e8eefd;
+  --color-accent: #0f766e;
+  --color-accent-soft: #dcf2ee;
   --color-on-accent: #ffffff;
   --color-danger: #b42a2a;
   --color-danger-soft: #fdeaea;
@@ -15,7 +15,7 @@
   --color-success-soft: #e3f4ea;
   --color-warning: #8a5300;
   --color-warning-soft: #fdf1db;
-  --color-focus-ring: #2f5bea;
+  --color-focus-ring: #0f766e;
   --color-avail-yes: #dff3e6;
   --color-avail-no: #e4e7eb;
   --color-shift-1: #dbe7ff;

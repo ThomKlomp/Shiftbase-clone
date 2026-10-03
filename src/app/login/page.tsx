@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useStore, resetState } from '@/lib/store';
 import { useSession } from '@/lib/session';
+import { BRAND } from '@/lib/brand';
 import { Avatar, Button, Banner } from '@/components/ui';
 
 export default function Login() {
@@ -10,8 +11,9 @@ export default function Login() {
   const router = useRouter();
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-4 p-4">
-      <h1 className="text-xl font-bold">Rooster</h1>
-      <Banner kind="info">Dit is een demo met voorbeeldgegevens in je browser. Kies wie je wilt zijn om de verschillende rechten te zien.</Banner>
+      <h1 className="text-xl font-bold">{BRAND.name}</h1>
+      <p className="text-text-muted">{BRAND.tagline}</p>
+      <Banner kind="info">Dit is een demo met voorbeeldgegevens in je browser. Kies een persoon om te zien wat die wel en niet kan.</Banner>
       <ul className="flex flex-col gap-2">
         {state.employees.filter((e) => e.active).map((e) => {
           const group = state.groups.find((g) => g.id === Object.values(e.groupByDept)[0])?.name;

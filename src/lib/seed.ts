@@ -49,7 +49,7 @@ export function makeSeed(today = todayStr()): State {
       { id: 'd2', name: 'Magazijn', locationName: 'Hoofdvestiging', timezone: 'Europe/Amsterdam', publishDaysAhead: null, openShiftNeedsApproval: false },
     ],
     teams: [
-      { id: 't1', departmentId: 'd1', name: 'Kassa', kind: 'default', colour: '#2f5bea' },
+      { id: 't1', departmentId: 'd1', name: 'Kassa', kind: 'default', colour: '#0f766e' },
       { id: 't2', departmentId: 'd1', name: 'Vloer', kind: 'default', colour: '#1a7045' },
       { id: 't3', departmentId: 'd2', name: 'Inslag', kind: 'default', colour: '#8a5300' },
     ],
@@ -64,7 +64,7 @@ export function makeSeed(today = todayStr()): State {
     published: { d1: [], d2: [] },
     availability: [],
     absenceTypes: [
-      { id: 'at1', name: 'Vakantie', balanceId: 'b1', colour: '#2f5bea' },
+      { id: 'at1', name: 'Vakantie', balanceId: 'b1', colour: '#0f766e' },
       { id: 'at2', name: 'Ziek', balanceId: null, colour: '#b42a2a' },
       { id: 'at3', name: 'Bijzonder verlof', balanceId: null, colour: '#8a5300' },
     ],

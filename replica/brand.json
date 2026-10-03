@@ -1,0 +1,6 @@
+{
+  "name": "Beurtwerk",
+  "avoid": ["Shiftbase", "Shift base", "shiftbase.com", "differentlab", "Different Lab", "Stoplight"],
+  "domains": ["shiftbase.com", "shiftbase.io", "help.shiftbase.com", "developer.shiftbase.com", "api.shiftbase.com"],
+  "colors": []
+}
