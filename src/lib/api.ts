@@ -17,6 +17,14 @@ export class Conflict extends Error {}
 function need(s: State, actor: ID, dept: ID, perm: Perm) {
   if (!hasPerm(s, actor, dept, perm)) throw new Forbidden(perm);
 }
+function log(s: State, actor: ID, text: string) {
+  s.audit.unshift({ id: uid('au'), at: new Date().toISOString(), actorId: actor, text });
+  if (s.audit.length > 500) s.audit.length = 500;
+}
+const shiftText = (s: State, sh: Shift) => {
+  const e = s.employees.find((x) => x.id === sh.employeeId);
+  return `${sh.date} ${sh.start}–${sh.end}${e ? ` (${e.firstName} ${e.lastName})` : ' (open dienst)'}`;
+};
 function notify(s: State, employeeIds: ID[], kind: string, text: string, href: string, except?: ID) {
   const at = new Date().toISOString();
   for (const id of new Set(employeeIds)) {
@@ -43,6 +51,7 @@ export async function createShift(actor: ID, input: ShiftInput, sendNotification
     const seriesId = repeat ? uid('series') : null;
     const created = dates.map((date) => ({ ...base, date, id: uid('s'), seriesId, openSourceId: null }) as Shift);
     s.shifts.push(...created);
+    log(s, actor, `Dienst toegevoegd: ${shiftText(s, created[0])}${created.length > 1 ? ` en ${created.length - 1} herhalingen` : ''}`);
     if (sendNotification && input.employeeId) {
       notify(s, [input.employeeId], 'shift', `Nieuwe dienst op ${fmtShort(input.date)}`, '/mijn-rooster', actor);
     }
@@ -58,6 +67,7 @@ export async function updateShift(actor: ID, id: ID, patch: ShiftPatch, scope: '
     const sh = s.shifts.find((x) => x.id === id);
     if (!sh) throw new Error('Dienst niet gevonden');
     need(s, actor, sh.departmentId, 'schedule.edit');
+    const before = shiftText(s, sh);
     const delta = patch.date ? diffDays(sh.date, patch.date) : 0;
     const targets = scope === 'future' && sh.seriesId
       ? s.shifts.filter((x) => x.seriesId === sh.seriesId && x.date >= sh.date)
@@ -69,6 +79,7 @@ export async function updateShift(actor: ID, id: ID, patch: ShiftPatch, scope: '
       if (patch.employeeId === null && !t.neededCount) t.neededCount = 1;
       if (patch.employeeId) t.neededCount = null;
     }
+    log(s, actor, `Dienst gewijzigd: ${before} → ${shiftText(s, sh)}${targets.length > 1 ? ` (en ${targets.length - 1} volgende)` : ''}`);
     if (sendNotification && sh.employeeId) notify(s, [sh.employeeId], 'shift', `Je dienst op ${fmtShort(sh.date)} is gewijzigd`, '/mijn-rooster', actor);
   });
 }
@@ -82,6 +93,7 @@ export async function deleteShift(actor: ID, id: ID, scope: 'this' | 'future' = 
       ? s.shifts.filter((x) => x.seriesId === sh.seriesId && x.date >= sh.date)
       : [sh];
     const ids = new Set(doomed.map((x) => x.id));
+    log(s, actor, `Dienst verwijderd: ${shiftText(s, sh)}${doomed.length > 1 ? ` (en ${doomed.length - 1} volgende)` : ''}`);
     if (sendNotification) notify(s, doomed.map((x) => x.employeeId).filter(Boolean) as ID[], 'shift', `Een dienst is verwijderd`, '/mijn-rooster', actor);
     s.shifts = s.shifts.filter((x) => !ids.has(x.id));
     s.invites = s.invites.filter((i) => !ids.has(i.shiftId));
@@ -98,6 +110,7 @@ export async function copyShift(actor: ID, id: ID, target: { date: DateStr; empl
     if (target.employeeId !== undefined) { copy.employeeId = target.employeeId; copy.neededCount = target.employeeId ? null : sh.neededCount ?? 1; }
     if (target.teamId) copy.teamId = target.teamId;
     s.shifts.push(copy);
+    log(s, actor, `Dienst gekopieerd naar ${shiftText(s, copy)}`);
     return copy;
   });
 }
@@ -110,6 +123,7 @@ export async function copyWeek(actor: ID, departmentId: ID, fromDate: DateStr, t
     if (offset === 0) throw new Conflict('Kies een andere week om naartoe te kopiëren');
     const src = s.shifts.filter((x) => x.departmentId === departmentId && x.date >= from && x.date <= addDays(from, 6) && !x.openSourceId);
     for (const x of src) s.shifts.push({ ...x, id: uid('s'), seriesId: null, date: addDays(x.date, offset) });
+    log(s, actor, `Week gekopieerd: ${src.length} diensten van ${from} naar ${to}`);
     return src.length;
   });
 }
@@ -125,6 +139,7 @@ export async function setPublished(actor: ID, departmentId: ID, days: DateStr[],
       if (!published) cur.delete(d);
     }
     s.published[departmentId] = [...cur].sort();
+    log(s, actor, `${published ? 'Gepubliceerd' : 'Teruggezet naar concept'}: ${days.length} dag(en) van ${s.departments.find((d) => d.id === departmentId)?.name}`);
     if (published && sendNotification && newly.length) {
       const people = s.shifts.filter((x) => x.departmentId === departmentId && newly.includes(x.date) && x.employeeId).map((x) => x.employeeId as ID);
       notify(s, people, 'publish', 'Het rooster is gepubliceerd', '/mijn-rooster', actor);
@@ -184,6 +199,7 @@ export async function assignOpenShift(actor: ID, shiftId: ID, employeeId: ID) {
     let inv = s.invites.find((i) => i.shiftId === shiftId && i.employeeId === employeeId);
     if (!inv) { inv = { id: uid('i'), shiftId, employeeId, status: 'invited' }; s.invites.push(inv); }
     assignInPlace(s, sh, inv);
+    log(s, actor, `Open dienst ingedeeld: ${shiftText(s, sh)} → ${s.employees.find((e) => e.id === employeeId)?.firstName}`);
     notify(s, [employeeId], 'open_shift', `Je bent ingedeeld op ${fmtShort(sh.date)}`, '/mijn-rooster', actor);
   });
 }
@@ -227,6 +243,7 @@ export async function requestAbsence(actor: ID, input: Omit<Absence, 'id' | 'sta
 
 function applyDecision(s: State, abs: Absence, status: AbsenceStatus, by: ID) {
   abs.status = status; abs.decidedBy = by;
+  log(s, by, `Verlof ${status === 'approved' ? 'goedgekeurd' : 'afgewezen'}: ${s.employees.find((e) => e.id === abs.employeeId)?.firstName} ${abs.start}–${abs.end}`);
   const type = s.absenceTypes.find((t) => t.id === abs.typeId);
   s.balanceEntries = s.balanceEntries.filter((e) => e.absenceId !== abs.id);
   if (status === 'approved') {
@@ -274,6 +291,7 @@ export async function correctBalance(actor: ID, employeeId: ID, balanceId: ID, a
     const emp = s.employees.find((e) => e.id === employeeId)!;
     const depts = emp.teamIds.map((t) => s.teams.find((x) => x.id === t)!.departmentId);
     if (!depts.some((d) => hasPerm(s, actor, d, 'absence.approve'))) throw new Forbidden('absence.approve');
+    log(s, actor, `Saldo gecorrigeerd: ${emp.firstName} ${amount > 0 ? '+' : ''}${amount} (${note})`);
     s.balanceEntries.push({ id: uid('be'), employeeId, balanceId, amount, kind: 'correction', absenceId: null, date: todayStr(), note });
   });
 }
@@ -319,6 +337,7 @@ export async function decideExchange(actor: ID, exchangeId: ID, approve: boolean
     need(s, actor, sh.departmentId, 'exchange.approve');
     if (ex.status !== 'pending_manager') throw new Conflict('Dit verzoek wacht niet op goedkeuring');
     ex.status = approve ? 'approved' : 'rejected';
+    log(s, actor, `Ruil ${approve ? 'goedgekeurd' : 'afgewezen'}: ${shiftText(s, sh)}`);
     if (approve && ex.toEmployeeId) sh.employeeId = ex.toEmployeeId;
     notify(s, [ex.fromEmployeeId, ex.toEmployeeId].filter(Boolean) as ID[], 'exchange', `Ruil ${approve ? 'goedgekeurd' : 'afgewezen'}`, '/ruilen', actor);
   });
@@ -358,6 +377,7 @@ export async function addEmployee(actor: ID, e: { firstName: string; lastName: s
     if (s.employees.some((x) => x.email.toLowerCase() === e.email.toLowerCase())) throw new Conflict('Dit e-mailadres bestaat al');
     const emp: Employee = { id: uid('e'), firstName: e.firstName, lastName: e.lastName, email: e.email, active: true, teamIds: e.teamIds, hoursPerWeek: e.hoursPerWeek, groupByDept: Object.fromEntries(depts.map((d) => [d, e.groupId])) };
     s.employees.push(emp);
+    log(s, actor, `Medewerker toegevoegd: ${emp.firstName} ${emp.lastName}`);
     return emp;
   });
 }
@@ -367,6 +387,7 @@ export async function setEmployeeActive(actor: ID, id: ID, active: boolean) {
     if (!emp) return;
     if (!emp.teamIds.some((t) => hasPerm(s, actor, s.teams.find((x) => x.id === t)!.departmentId, 'employees.manage'))) throw new Forbidden('employees.manage');
     emp.active = active;
+    log(s, actor, `${emp.firstName} ${emp.lastName} ${active ? 'geactiveerd' : 'gedeactiveerd'}`);
   });
 }
 
@@ -428,6 +449,19 @@ export async function clockOut(employeeId: ID) {
     t.end = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
   });
 }
+/** Planner closes a forgotten clock-in at a chosen time. */
+export async function fixClockOut(actor: ID, id: ID, end: string) {
+  return update((s) => {
+    const t = s.timesheet.find((x) => x.id === id);
+    if (!t) throw new Error('Registratie niet gevonden');
+    need(s, actor, t.departmentId, 'timesheet.approve');
+    if (t.end !== null) throw new Conflict('Deze registratie is al afgesloten');
+    if (!/^\d{2}:\d{2}$/.test(end)) throw new Error('Vul een geldige eindtijd in');
+    t.end = end;
+    log(s, actor, `Vergeten uitklokken hersteld: ${s.employees.find((e) => e.id === t.employeeId)?.firstName} ${t.date} ${t.start}–${end}`);
+  });
+}
+
 export async function decideTimesheet(actor: ID, ids: ID[], status: 'approved' | 'declined' | 'pending') {
   return update((s) => {
     for (const id of ids) {

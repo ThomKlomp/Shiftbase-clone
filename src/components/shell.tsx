@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, type ReactNode } from 'react';
-import { Bell, CalendarDays, CalendarOff, Clock, Home, LogOut, Repeat, Settings, Users, Hand, Target, CalendarClock } from 'lucide-react';
+import { Bell, CalendarDays, CalendarOff, Clock, Home, LogOut, Repeat, Settings, Users, Hand, Target, CalendarClock, ScrollText } from 'lucide-react';
 import { useSession } from '@/lib/session';
 import { useStore } from '@/lib/store';
 import { hasPermAnywhere } from '@/lib/domain';
@@ -18,6 +18,7 @@ const NAV: NavItem[] = [
   { href: '/beschikbaarheid', label: 'Beschikbaarheid', icon: Clock, mobile: true },
   { href: '/verlof', label: 'Verlof', icon: CalendarOff, mobile: true },
   { href: '/vereiste-diensten', label: 'Bezetting', icon: Target, perm: 'schedule.edit' },
+  { href: '/logboek', label: 'Logboek', icon: ScrollText, perm: 'schedule.edit' },
   { href: '/tijdregistratie', label: 'Tijdregistratie', icon: Clock },
   { href: '/medewerkers', label: 'Medewerkers', icon: Users, perm: 'employees.manage' },
   { href: '/instellingen', label: 'Instellingen', icon: Settings, perm: 'settings.manage' },
@@ -52,14 +53,14 @@ export function AppShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen md:grid md:grid-cols-[var(--layout-sidebar)_1fr]">
+    <div className="min-h-screen md:grid print:block md:grid-cols-[var(--layout-sidebar)_1fr]">
       <a href="#inhoud" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-bg focus:px-3 focus:py-2">Naar inhoud</a>
-      <aside className="hidden border-r border-border bg-surface md:flex md:flex-col">
+      <aside className="hidden print:hidden border-r border-border bg-surface md:flex md:flex-col">
         <div className="flex h-[var(--layout-header)] items-center px-4 text-lg font-bold">Rooster</div>
         <nav aria-label="Hoofdmenu" className="flex flex-1 flex-col gap-1 px-2">{items.map((n) => link(n))}</nav>
       </aside>
       <div className="flex min-w-0 flex-col pb-16 md:pb-0">
-        <header className="flex h-[var(--layout-header)] items-center justify-between gap-2 border-b border-border px-4">
+        <header className="flex print:hidden h-[var(--layout-header)] items-center justify-between gap-2 border-b border-border px-4">
           <span className="font-bold md:hidden">Rooster</span>
           <span className="hidden text-text-muted md:inline">{state.orgName}</span>
           <div className="flex items-center gap-2">
@@ -74,7 +75,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </header>
         <main id="inhoud" className="mx-auto w-full max-w-[var(--layout-content-max)] flex-1 p-4">{children}</main>
       </div>
-      <nav aria-label="Snelmenu" className="fixed inset-x-0 bottom-0 z-30 flex border-t border-border bg-bg md:hidden">
+      <nav aria-label="Snelmenu" className="print:hidden fixed inset-x-0 bottom-0 z-30 flex border-t border-border bg-bg md:hidden">
         {items.filter((n) => n.mobile).map((n) => link(n, true))}
         <Link href="/meer" className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 text-xs"><Home size={20} aria-hidden />Meer</Link>
       </nav>

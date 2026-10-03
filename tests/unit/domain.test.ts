@@ -226,3 +226,30 @@ describe('daylight saving (Europe/Amsterdam: 25 Oct 2026 clocks back, 29 Mar 202
     expect(durationMin('22:00', '06:00')).toBe(480);
   });
 });
+
+describe('change log and forgotten clock-out', () => {
+  it('records who did what, newest first', async () => {
+    const s = getState();
+    const { id: _i, seriesId: _s, openSourceId: _o, ...rest } = s.shifts[0];
+    const [made] = await api.createShift(PLANNER, { ...rest, date: addDays(w, 14) });
+    await api.updateShift(PLANNER, made.id, { start: '10:00' });
+    await api.deleteShift(PLANNER, made.id);
+    const log = getState().audit;
+    expect(log.slice(0, 3).map((a) => a.text.split(':')[0])).toEqual(['Dienst verwijderd', 'Dienst gewijzigd', 'Dienst toegevoegd']);
+    expect(log.every((a) => a.actorId === PLANNER)).toBe(true);
+  });
+  it('a failed action leaves no log entry', async () => {
+    const n = getState().audit.length;
+    await expect(api.setPublished(EMP, 'd1', [w], true)).rejects.toThrow();
+    expect(getState().audit.length).toBe(n);
+  });
+  it('an approver (admin) can close a forgotten clock-in; employee and planner cannot', async () => {
+    await api.clockIn(EMP, 'd1');
+    const id = getState().timesheet[0].id;
+    await expect(api.fixClockOut(EMP, id, '17:00')).rejects.toThrow(/Geen rechten/);
+    await expect(api.fixClockOut(PLANNER, id, '17:00')).rejects.toThrow(/Geen rechten/);
+    await api.fixClockOut(ADMIN, id, '17:00');
+    expect(getState().timesheet[0].end).toBe('17:00');
+    await expect(api.fixClockOut(ADMIN, id, '18:00')).rejects.toThrow(/al afgesloten/);
+  });
+});

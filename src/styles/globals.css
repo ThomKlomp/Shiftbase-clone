@@ -13,3 +13,15 @@
 @layer components {
   .skeleton { @apply bg-surface-sunken rounded-md animate-pulse; }
 }
+
+@media print {
+  @page { size: A4 landscape; margin: 10mm; }
+  body { font-size: 10pt; background: #fff; }
+  main { padding: 0 !important; max-width: none !important; }
+  .print-hide { display: none !important; }
+  table[role='grid'] { min-width: 0 !important; font-size: 9pt; }
+  table[role='grid'] th, table[role='grid'] td { position: static !important; }
+  .overflow-x-auto { overflow: visible !important; }
+  tr { break-inside: avoid; }
+  * { box-shadow: none !important; }
+}

@@ -25,3 +25,6 @@ Fix: `src/app/icon.svg` (own artwork). Caught by the guard that fails any same-o
 
 - Drag and drop has no arrow-key alternative inside the grid itself; the form is the keyboard path. Needs a screen reader user to say if that is enough.
 - The live Supabase data layer will bring the same lost-update risk: use `updated_at` checks on shift edits (listed in architecture.md).
+
+## Entrepreneur fixes shipped (not bugs)
+Change log (app + `0005_audit_log.sql` trigger, tested), print stylesheet, forgotten clock-out flag + admin fix, day view default on phones. All are hypotheses-driven (see `fixes.md`); the original may already have equivalents.

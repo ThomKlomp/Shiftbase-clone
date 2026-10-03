@@ -75,5 +75,6 @@ export function makeSeed(today = todayStr()): State {
     requiredShifts: [0, 1, 2, 3, 4].map((d, i) => ({ id: `r${i}`, departmentId: 'd1', teamId: 't1', date: addDays(w, d), start: '08:00', end: '16:00', mode: 'min' as const, count: 2 })),
     notifications: [],
     timesheet: [],
+    audit: [],
   };
 }

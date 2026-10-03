@@ -20,7 +20,7 @@ export default function SchedulePage() {
   const myDepts = me ? state.departments.filter((d) => hasPerm(state, me.id, d.id, 'schedule.edit')) : [];
   const [deptId, setDeptId] = useState<ID>('');
   const [anchor, setAnchor] = useState<DateStr>(today);
-  const [view, setView] = useState<'week' | 'dag'>('week');
+  const [view, setView] = useState<'week' | 'dag'>(() => (typeof window !== 'undefined' && window.innerWidth < 640 ? 'dag' : 'week'));
   const [showAvail, setShowAvail] = useState(true);
   const [showAbs, setShowAbs] = useState(true);
   const [draft, setDraft] = useState<ShiftDraft | null>(null);
@@ -56,7 +56,7 @@ export default function SchedulePage() {
 
   return (
     <div>
-      <PageHeader title="Rooster">
+      <div className="print-hide"><PageHeader title="Rooster">
         {myDepts.length > 1 && (
           <label className="flex items-center gap-2"><span className="sr-only">Afdeling</span>
             <Select value={dept.id} onChange={(e) => setDeptId(e.target.value)} className="w-40">{myDepts.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</Select>
@@ -81,7 +81,7 @@ export default function SchedulePage() {
             </div>
           )}
         </div>
-      </PageHeader>
+      </PageHeader></div>
 
       <div className="mb-3 flex flex-wrap items-center gap-4 text-sm">
         <span className="font-semibold">{fmtShort(days[0])}{days.length > 1 && ` – ${fmtShort(days[days.length - 1])}`}</span>
@@ -148,7 +148,7 @@ export default function SchedulePage() {
           </table>
         </div>
       )}
-      <p className="mt-2 text-xs text-text-muted">Sleep een dienst om te verplaatsen, houd Alt ingedrukt om te kopiëren. Met het toetsenbord: open een dienst en pas datum of medewerker aan.</p>
+      <p className="print-hide mt-2 text-xs text-text-muted">Sleep een dienst om te verplaatsen, houd Alt ingedrukt om te kopiëren. Met het toetsenbord: open een dienst en pas datum of medewerker aan.</p>
 
       <ShiftForm actor={me.id} draft={draft} onClose={() => setDraft(null)} />
       <PublishDialog open={publishOpen} onClose={() => setPublishOpen(false)} actor={me.id} departmentId={dept.id} days={weekDaysAll} />

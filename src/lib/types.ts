@@ -50,6 +50,8 @@ export interface RequiredShift { id: ID; departmentId: ID; teamId: ID; date: Dat
 export interface Notification { id: ID; employeeId: ID; kind: string; text: string; href: string; readAt: string | null; createdAt: string }
 export interface TimesheetEntry { id: ID; employeeId: ID; departmentId: ID; date: DateStr; start: TimeStr; end: TimeStr | null; unpaidBreakMin: number; status: 'pending' | 'approved' | 'declined' }
 
+export interface AuditEntry { id: ID; at: string; actorId: ID; text: string }
+
 export interface State {
   orgName: string;
   orgPublishDaysAhead: number;
@@ -70,4 +72,5 @@ export interface State {
   requiredShifts: RequiredShift[];
   notifications: Notification[];
   timesheet: TimesheetEntry[];
+  audit: AuditEntry[];
 }

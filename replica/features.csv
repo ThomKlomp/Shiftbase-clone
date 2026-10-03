@@ -49,3 +49,7 @@ Demand forecast and AI turnover forecast,performance,could,yes,skip,needs histor
 Payroll preparation flow,payroll,could,yes,no,Basic plan; defer
 Chat module,communication,could,yes,no,
 Light / dark / system theme,ux,could,yes,no,
+Change log (who changed or deleted shifts and decisions),schedule,should,no,yes,fix plan #1 from replica-entrepreneur; hypothesis H7
+Clean print stylesheet for the schedule,schedule,could,no,yes,fix plan #2
+Forgotten clock-out flag,time clock,could,no,yes,fix plan #3; hypothesis H8
+Phone-first planner (day view default on narrow screens),schedule,could,no,yes,fix plan #4

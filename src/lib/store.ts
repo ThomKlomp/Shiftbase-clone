@@ -8,12 +8,15 @@ let state: State | null = null;
 let serverState: State | null = null;
 const listeners = new Set<() => void>();
 
+/** Older saved demo data may lack newer fields. */
+function migrate(s: State): State { s.audit ??= []; return s; }
+
 function load(): State {
   if (state) return state;
   if (typeof window !== 'undefined') {
     try {
       const raw = window.localStorage.getItem(KEY);
-      if (raw) return (state = JSON.parse(raw) as State);
+      if (raw) return (state = migrate(JSON.parse(raw) as State));
     } catch { /* storage blocked: fall through to seed */ }
   }
   state = makeSeed();
@@ -30,7 +33,7 @@ function syncFromStorage() {
   if (typeof window === 'undefined') return;
   try {
     const raw = window.localStorage.getItem(KEY);
-    if (raw) state = JSON.parse(raw) as State;
+    if (raw) state = migrate(JSON.parse(raw) as State);
   } catch { /* keep memory copy */ }
 }
 if (typeof window !== 'undefined') {

@@ -127,3 +127,45 @@ test('F-DST Sunday 25 Oct 2026 (clocks go back): week view still has 7 distinct 
   const days = heads.filter((h) => /^(Ma|Di|Wo|Do|Vr|Za|Zo) \d/.test(h)).map((h) => h.split(/\s{1}/).slice(0, 3).join(' '));
   expect(new Set(days).size).toBe(7);
 });
+
+test('FIX-1 change log shows who changed a shift; employees are denied', async ({ page }) => {
+  await loginAs(page, 'Bram');
+  await page.getByRole('button', { name: /Dienst$/ }).first().click();
+  await page.getByLabel('Begintijd', { exact: true }).fill('05:00');
+  await page.getByLabel('Eindtijd', { exact: true }).fill('06:00');
+  await page.getByRole('button', { name: 'Opslaan' }).click();
+  await page.goto('/logboek');
+  await expect(page.getByText('Bram Jansen').first()).toBeVisible();
+  await expect(page.getByText(/Dienst toegevoegd/)).toBeVisible();
+  await page.getByRole('button', { name: 'Uitloggen' }).click();
+  await loginAs(page, 'Chantal');
+  await page.goto('/logboek');
+  await expect(page.getByText(/geen rechten/i)).toBeVisible();
+});
+
+test('FIX-2 print view hides the app chrome and keeps the grid', async ({ page }) => {
+  await loginAs(page, 'Bram');
+  await page.emulateMedia({ media: 'print' });
+  await expect(page.getByRole('navigation', { name: 'Hoofdmenu' })).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Acties' })).toBeHidden();
+  await expect(page.getByRole('grid', { name: 'Rooster' })).toBeVisible();
+});
+
+test('FIX-3 a clock left running from yesterday is flagged and an admin can fix it', async ({ page }) => {
+  await loginAs(page, 'Chantal');
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem('rooster-demo-v1')!); const d = new Date(Date.now() - 86400000); const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; s.timesheet.push({ id: 'ts-old', employeeId: 'e3', departmentId: 'd1', date: ds, start: '08:00', end: null, unpaidBreakMin: 0, status: 'pending' }); localStorage.setItem('rooster-demo-v1', JSON.stringify(s)); });
+  await page.goto('/tijdregistratie');
+  await expect(page.getByText('Vergeten uit te klokken?')).toBeVisible();
+  await page.getByRole('button', { name: 'Uitloggen' }).click();
+  await loginAs(page, 'Anna');
+  await page.goto('/tijdregistratie');
+  await page.getByRole('button', { name: 'Uitklokken', exact: true }).click();
+  await expect(page.getByText('Uitklokken hersteld')).toBeVisible();
+  await expect(page.getByText('Vergeten uit te klokken?')).toHaveCount(0);
+});
+
+test('FIX-4 phone: the planner opens on the day view', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await loginAs(page, 'Bram');
+  await expect(page.getByRole('button', { name: 'Dag' })).toHaveAttribute('aria-pressed', 'true');
+});
