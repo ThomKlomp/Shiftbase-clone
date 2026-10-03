@@ -43,3 +43,9 @@ Public API with API keys,integrations,could,yes,no,verify scope
 Integration marketplace (payroll POS HR),integrations,could,yes,skip,partner network cannot be rebuilt
 HR Pro (contracts e-signing onboarding),hr,could,yes,skip,add-on; out of scope for now
 Weather forecast and sentiment analyzer,performance,could,yes,skip,licensed/third-party data
+Auto-scheduling (draft schedule from availability and required shifts),schedule,could,yes,no,2026 release notes; differentiator candidate
+Shift recommendations for required shifts,schedule,could,yes,no,add / add and assign
+Demand forecast and AI turnover forecast,performance,could,yes,skip,needs historic data; defer
+Payroll preparation flow,payroll,could,yes,no,Basic plan; defer
+Chat module,communication,could,yes,no,
+Light / dark / system theme,ux,could,yes,no,

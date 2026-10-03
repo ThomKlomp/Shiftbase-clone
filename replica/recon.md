@@ -2,7 +2,7 @@
 
 Scope: core loop: rostering (schedule, shifts, open shifts, swaps), availability, absence. Time clock / timesheets are "should".
 For: a niche product to sell (segment still to choose)
-Date: 2026-10-03 (revision 2)
+Date: 2026-10-03 (revision 3)
 
 > **STATUS: MEDIUM CONFIDENCE.** Revision 2 reads the public help center
 > (help.shiftbase.com, 30+ articles) instead of search snippets. Still NOT read:
@@ -37,6 +37,14 @@ Date: 2026-10-03 (revision 2)
 | 18 | public API docs | https://developer.shiftbase.com/ | NOT READABLE (Stoplight SPA); base https://api.shiftbase.com/api/ [search] |
 | 19 | marketing, pricing | https://www.shiftbase.com/ | BLOCKED |
 | 20 | app store listings, changelog | https://help.shiftbase.com/release-notes | TODO |
+
+## Extra findings (revision 3)
+
+Searched for pricing, API spec and app-store data; apps.apple.com, itunes, stoplight.io, getapp and apitracker are blocked, the Stoplight docs render empty. What was found:
+
+- **Pricing** (third-party listings, via web search, unverified against shiftbase.com): free plan up to 75 employees and 1 department; Basic EUR 3.25, Premium EUR 4.25, Enterprise EUR 6 per user per month; 14-day trial [search]. Premium gates availability rules; Basic/Premium gate mobile open shifts [help]. Public API needs the paid "App Center Plus" add-on, 180 req/min, JSON [search, help].
+- **Release notes** (help.shiftbase.com/release-notes, Jun-Sep 2026): the product is moving towards **auto-scheduling** (monthly, shift recommendations "Add" / "Add and assign", demand forecast, wage-aware cost), AI turnover forecast, payroll preparation flow, chat module, HR Pro e-signing, mobile app v6 redesign, light/dark theme. These are the direction of travel, not core loop: treat as "could", and a possible differentiator.
+- **Still missing:** screenshots, API field lists, real UI states. Nothing more can be reached from this environment.
 
 ## Core loop
 
